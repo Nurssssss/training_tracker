@@ -5,11 +5,15 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/screens/auth_screen.dart';
+import '../../features/history/presentation/screens/history_screen.dart';
+import '../../features/workouts/domain/entities/workout.dart';
+import '../../features/workouts/presentation/screens/workout_detail_screen.dart';
 import '../../features/workouts/presentation/screens/workouts_list_screen.dart';
 
 class AppRoutes {
   static const auth = '/auth';
   static const workouts = '/workouts';
+  static const history = '/history';
 }
 
 GoRouter buildRouter(AuthBloc authBloc) {
@@ -38,6 +42,17 @@ GoRouter buildRouter(AuthBloc authBloc) {
       GoRoute(
         path: AppRoutes.workouts,
         builder: (context, state) => const WorkoutsListScreen(),
+      ),
+      GoRoute(
+        path: '/workouts/:id',
+        builder: (context, state) {
+          final workout = state.extra as Workout;
+          return WorkoutDetailScreen(workout: workout);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.history,
+        builder: (context, state) => const HistoryScreen(),
       ),
     ],
   );
