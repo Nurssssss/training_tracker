@@ -6,7 +6,9 @@ import 'core/theme/app_theme.dart';
 import 'features/auth/data/auth_repository_impl.dart';
 import 'features/auth/domain/auth_repository.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/workouts/data/exercises_repository_impl.dart';
 import 'features/workouts/data/workouts_repository_impl.dart';
+import 'features/workouts/domain/exercises_repository.dart';
 import 'features/workouts/domain/workouts_repository.dart';
 import 'features/workouts/presentation/bloc/workouts_bloc.dart';
 
@@ -22,6 +24,9 @@ class TrainingTrackerApp extends StatelessWidget {
         ),
         RepositoryProvider<WorkoutsRepository>(
           create: (_) => WorkoutsRepositoryImpl(),
+        ),
+        RepositoryProvider<ExercisesRepository>(
+          create: (_) => ExercisesRepositoryImpl(),
         ),
       ],
       child: MultiBlocProvider(
