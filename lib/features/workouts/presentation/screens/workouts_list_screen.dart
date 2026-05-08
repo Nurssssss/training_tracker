@@ -70,7 +70,7 @@ class _WorkoutsListScreenState extends State<WorkoutsListScreen> {
           IconButton(
             tooltip: 'История',
             icon: const Icon(Icons.history),
-            onPressed: () => context.go('/history'),
+            onPressed: () => context.push('/history'),
           ),
           IconButton(
             tooltip: 'Выйти',
@@ -123,7 +123,7 @@ class _WorkoutsListScreenState extends State<WorkoutsListScreen> {
                 final w = state.items[i];
                 return WorkoutCard(
                   workout: w,
-                  onTap: () => context.go('/workouts/${w.id}', extra: w),
+                  onTap: () => context.push('/workouts/${w.id}', extra: w),
                   onDelete: () => _confirmDelete(w.id, w.title),
                 );
               },
