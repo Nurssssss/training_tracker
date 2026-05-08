@@ -10,7 +10,13 @@ class AuthRepositoryImpl implements AuthRepository {
 
   AppUser? _toAppUser(User? user) {
     if (user == null) return null;
-    return AppUser(id: user.id, email: user.email ?? '');
+    final meta = user.userMetadata;
+    final name = (meta?['display_name'] as String?)?.trim();
+    return AppUser(
+      id: user.id,
+      email: user.email ?? '',
+      displayName: (name == null || name.isEmpty) ? null : name,
+    );
   }
 
   @override
@@ -73,6 +79,35 @@ class AuthRepositoryImpl implements AuthRepository {
       await _client.auth.signOut();
     } on AuthException catch (e) {
       throw Failure(e.message);
+    }
+  }
+
+  @override
+  Future<AppUser> updateDisplayName(String displayName) async {
+    try {
+      final res = await _client.auth.updateUser(
+        UserAttributes(data: {'display_name': displayName}),
+      );
+      final user = _toAppUser(res.user);
+      if (user == null) throw const Failure('Не удалось обновить профиль');
+      return user;
+    } on AuthException catch (e) {
+      throw Failure(e.message);
+    } catch (_) {
+      throw const Failure('Что-то пошло не так');
+    }
+  }
+
+  @override
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _client.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
+    } on AuthException catch (e) {
+      throw Failure(e.message);
+    } catch (_) {
+      throw const Failure('Не удалось сменить пароль');
     }
   }
 }

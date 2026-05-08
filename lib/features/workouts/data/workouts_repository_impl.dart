@@ -72,4 +72,37 @@ class WorkoutsRepositoryImpl implements WorkoutsRepository {
       throw const Failure('Не удалось удалить тренировку');
     }
   }
+
+  @override
+  Future<ProfileStats> fetchStats() async {
+    try {
+      final wIds = await _client.from('workouts').select('id').eq('user_id', _uid);
+      final workoutIds = (wIds as List).map((e) => e['id']).toList();
+      if (workoutIds.isEmpty) {
+        return const ProfileStats(workouts: 0, exercises: 0, sets: 0);
+      }
+      final eIds = await _client
+          .from('exercises')
+          .select('id')
+          .inFilter('workout_id', workoutIds);
+      final exerciseIds = (eIds as List).map((e) => e['id']).toList();
+      int setsCount = 0;
+      if (exerciseIds.isNotEmpty) {
+        final sRows = await _client
+            .from('sets')
+            .select('id')
+            .inFilter('exercise_id', exerciseIds);
+        setsCount = (sRows as List).length;
+      }
+      return ProfileStats(
+        workouts: workoutIds.length,
+        exercises: exerciseIds.length,
+        sets: setsCount,
+      );
+    } on PostgrestException catch (e) {
+      throw Failure(e.message);
+    } catch (_) {
+      throw const Failure('Не удалось загрузить статистику');
+    }
+  }
 }

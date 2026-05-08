@@ -17,6 +17,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignInRequested>(_onSignIn);
     on<AuthSignUpRequested>(_onSignUp);
     on<AuthSignOutRequested>(_onSignOut);
+    on<AuthDisplayNameUpdateRequested>(_onUpdateDisplayName);
   }
 
   final AuthRepository _repo;
@@ -65,6 +66,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         user: user,
         isSubmitting: false,
       ));
+    } on Failure catch (f) {
+      emit(state.copyWith(isSubmitting: false, errorMessage: f.message));
+    }
+  }
+
+  Future<void> _onUpdateDisplayName(
+    AuthDisplayNameUpdateRequested e,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(state.copyWith(isSubmitting: true, clearError: true));
+    try {
+      final user = await _repo.updateDisplayName(e.displayName);
+      emit(state.copyWith(user: user, isSubmitting: false));
     } on Failure catch (f) {
       emit(state.copyWith(isSubmitting: false, errorMessage: f.message));
     }

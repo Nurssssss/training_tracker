@@ -43,3 +43,12 @@ class AuthSignUpRequested extends AuthEvent {
 class AuthSignOutRequested extends AuthEvent {
   const AuthSignOutRequested();
 }
+
+class AuthDisplayNameUpdateRequested extends AuthEvent {
+  const AuthDisplayNameUpdateRequested(this.displayName);
+
+  final String displayName;
+
+  @override
+  List<Object?> get props => [displayName];
+}
