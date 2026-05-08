@@ -23,6 +23,9 @@ dependencies:
   #Env_variable
   flutter_dotenv: ^6.0.1
 
+  #Local storage (settings)
+  shared_preferences: ^2.3.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

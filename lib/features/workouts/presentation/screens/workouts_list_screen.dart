@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../bloc/workouts_bloc.dart';
 import '../widgets/create_workout_sheet.dart';
 import '../widgets/workout_card.dart';
@@ -64,22 +63,7 @@ class _WorkoutsListScreenState extends State<WorkoutsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Мои тренировки'),
-        actions: [
-          IconButton(
-            tooltip: 'История',
-            icon: const Icon(Icons.history),
-            onPressed: () => context.push('/history'),
-          ),
-          IconButton(
-            tooltip: 'Выйти',
-            icon: const Icon(Icons.logout),
-            onPressed: () =>
-                context.read<AuthBloc>().add(const AuthSignOutRequested()),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Мои тренировки')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openCreateSheet,
         icon: const Icon(Icons.add),
