@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../settings/presentation/bloc/settings_cubit.dart';
 import '../../domain/entities/exercise.dart';
 import '../../domain/entities/workout.dart';
 import '../../domain/exercises_repository.dart';
@@ -176,16 +177,24 @@ class _ExerciseTile extends StatelessWidget {
                 ),
               )
             else
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final s in exercise.sets)
-                    InputChip(
-                      label: Text('${s.reps} × ${_fmtWeight(s.weight)} кг'),
-                      onDeleted: () => onDeleteSet(s.id),
-                    ),
-                ],
+              BlocBuilder<SettingsCubit, SettingsState>(
+                buildWhen: (p, c) => p.weightUnit != c.weightUnit,
+                builder: (context, settings) {
+                  final unit = settings.weightUnit.label;
+                  return Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final s in exercise.sets)
+                        InputChip(
+                          label: Text(
+                            '${s.reps} × ${_fmtWeight(s.weight)} $unit',
+                          ),
+                          onDeleted: () => onDeleteSet(s.id),
+                        ),
+                    ],
+                  );
+                },
               ),
             const SizedBox(height: 8),
             Align(

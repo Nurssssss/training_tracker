@@ -6,6 +6,7 @@ import 'core/theme/app_theme.dart';
 import 'features/auth/data/auth_repository_impl.dart';
 import 'features/auth/domain/auth_repository.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/settings/presentation/bloc/settings_cubit.dart';
 import 'features/workouts/data/exercises_repository_impl.dart';
 import 'features/workouts/data/workouts_repository_impl.dart';
 import 'features/workouts/domain/exercises_repository.dart';
@@ -39,6 +40,9 @@ class TrainingTrackerApp extends StatelessWidget {
             create: (context) =>
                 WorkoutsBloc(context.read<WorkoutsRepository>()),
           ),
+          BlocProvider<SettingsCubit>(
+            create: (_) => SettingsCubit()..load(),
+          ),
         ],
         child: const _AppView(),
       ),
@@ -58,13 +62,17 @@ class _AppViewState extends State<_AppView> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Training Tracker',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
-      routerConfig: _router,
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, settings) {
+        return MaterialApp.router(
+          title: 'Training Tracker',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: settings.themeMode,
+          routerConfig: _router,
+        );
+      },
     );
   }
 }
