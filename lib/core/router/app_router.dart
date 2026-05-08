@@ -8,12 +8,14 @@ import '../../features/auth/presentation/screens/auth_screen.dart';
 import '../../features/history/presentation/screens/history_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/workouts/domain/entities/workout.dart';
 import '../../features/workouts/presentation/screens/workout_detail_screen.dart';
 import '../../features/workouts/presentation/screens/workouts_list_screen.dart';
 import 'scaffold_with_nav.dart';
 
 class AppRoutes {
+  static const splash = '/';
   static const auth = '/auth';
   static const workouts = '/workouts';
   static const history = '/history';
@@ -23,11 +25,15 @@ class AppRoutes {
 
 GoRouter buildRouter(AuthBloc authBloc) {
   return GoRouter(
-    initialLocation: AppRoutes.workouts,
+    initialLocation: AppRoutes.splash,
     refreshListenable: _BlocRefreshListenable(authBloc.stream),
+    navigatorKey: _rootNavigatorKey,
     redirect: (context, state) {
       final status = authBloc.state.status;
       final loc = state.matchedLocation;
+
+      if (loc == AppRoutes.splash) return null;
+
       final goingToAuth = loc == AppRoutes.auth;
 
       if (status == AuthStatus.unknown) return null;
@@ -40,6 +46,10 @@ GoRouter buildRouter(AuthBloc authBloc) {
       return null;
     },
     routes: [
+      GoRoute(
+        path: AppRoutes.splash,
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: AppRoutes.auth,
         builder: (context, state) => const AuthScreen(),
@@ -86,7 +96,6 @@ GoRouter buildRouter(AuthBloc authBloc) {
         ],
       ),
     ],
-    navigatorKey: _rootNavigatorKey,
   );
 }
 
