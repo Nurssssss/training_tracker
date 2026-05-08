@@ -1,3 +1,68 @@
-# training_tracker
+# Training Tracker
 
-A new Flutter project.
+Учебный финальный Flutter-проект — мобильное приложение для отслеживания силовых тренировок.
+
+## Возможности
+
+- Регистрация и вход через Supabase Auth.
+- Создание тренировок (название + заметка).
+- Добавление упражнений и подходов (повторения × вес).
+- История тренировок: группировка по месяцам, статистика за всё время и за 30 дней.
+- Удаление тренировок, упражнений и подходов.
+- Защита данных Row Level Security: каждый пользователь видит только свои тренировки.
+
+## Стек
+
+- **Flutter** + Material 3
+- **State management:** `flutter_bloc` (BLoC + Cubit)
+- **Навигация:** `go_router` с auth-guard'ом
+- **Backend:** Supabase (Auth + Postgres + RLS)
+- **Конфиги:** `flutter_dotenv` (`.env` для ключей Supabase)
+- **Утилиты:** `equatable`
+
+## Архитектура
+
+```
+lib/
+├── main.dart              // bootstrap: dotenv → Supabase → runApp
+├── app.dart               // MultiRepositoryProvider + MultiBlocProvider + MaterialApp.router
+├── core/
+│   ├── error/             // Failure
+│   ├── router/            // GoRouter с auth-redirect
+│   ├── supabase/          // SupabaseConfig (init + client)
+│   ├── theme/             // светлая/тёмная темы M3
+│   └── utils/             // Validators
+└── features/
+    ├── auth/              // data → domain → presentation
+    ├── workouts/          // workouts + exercises + sets
+    └── history/           // экран истории
+```
+
+Слои:
+
+- **Presentation** (UI + BLoC/Cubit) → зависит от Domain.
+- **Domain** (entities + интерфейсы репозиториев) → не зависит ни от чего.
+- **Data** (реализация репозиториев + Supabase DTO) → реализует интерфейсы Domain.
+
+## Запуск
+
+1. Создать проект Supabase.
+2. В **SQL Editor** выполнить SQL из `.claude/docs/architecture.md` (создаёт таблицы `workouts/exercises/sets` + RLS).
+3. Скопировать `.env.example` → `.env` и заполнить:
+   ```
+   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_ANON_KEY=your-publishable-key
+   ```
+4. Установить зависимости и запустить:
+   ```bash
+   flutter pub get
+   flutter run
+   ```
+
+## Что улучшить, если бы было больше времени
+
+- Графики прогресса (`fl_chart`) — динамика рабочего веса по упражнениям.
+- Темплейты тренировок (создавать на основе предыдущей).
+- Оффлайн-кеш (Hive) с фоновой синхронизацией.
+- Push-уведомления о напоминаниях тренировок.
+- Экспорт истории в CSV.
