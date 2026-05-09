@@ -44,18 +44,3 @@ lib/
 - **Domain** (entities + интерфейсы репозиториев) → не зависит ни от чего.
 - **Data** (реализация репозиториев + Supabase DTO) → реализует интерфейсы Domain.
 
-## Запуск
-
-1. Создать проект Supabase.
-2. В **SQL Editor** выполнить SQL из `.claude/docs/architecture.md` (создаёт таблицы `workouts/exercises/sets` + RLS).
-3. Скопировать `.env.example` → `.env` и заполнить:
-   ```
-   SUPABASE_URL=https://your-project.supabase.co
-   SUPABASE_ANON_KEY=your-publishable-key
-   ```
-4. Установить зависимости и запустить:
-   ```bash
-   flutter pub get
-   flutter run
-   ```
-
